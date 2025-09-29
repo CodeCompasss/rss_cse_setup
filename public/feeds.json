@@ -1,0 +1,85 @@
+[
+  {
+    "category": "Engineering Blogs",
+    "feeds": [
+      {
+        "title": "8th Light",
+        "xmlUrl": "https://8thlight.com/insights/feed/rss.xml",
+        "htmlUrl": "https://8thlight.com/blog/",
+        "notes": ""
+      },
+      {
+        "title": "AdRoll",
+        "xmlUrl": "http://tech.adroll.com/feed.xml",
+        "htmlUrl": "http://tech.adroll.com/blog/",
+        "notes": ""
+      },
+      {
+        "title": "Advanced Web Machinery",
+        "xmlUrl": "https://advancedweb.hu/atom.xml",
+        "htmlUrl": "https://advancedweb.hu/",
+        "notes": ""
+      },
+      {
+        "title": "Airbnb",
+        "xmlUrl": "https://medium.com/feed/airbnb-engineering",
+        "htmlUrl": "https://medium.com/airbnb-engineering",
+        "notes": ""
+      },
+      {
+        "title": "Algolia",
+        "xmlUrl": "https://blog.algolia.com/blog/rss.xml",
+        "htmlUrl": "https://blog.algolia.com/",
+        "notes": ""
+      },
+      {
+        "title": "Appnexus",
+        "xmlUrl": "https://medium.com/feed/xandr-tech",
+        "htmlUrl": "https://techblog.appnexus.com/",
+        "notes": ""
+      },
+      {
+        "title": "Arkency",
+        "xmlUrl": "https://blog.arkency.com/feed.xml",
+        "htmlUrl": "http://blog.arkency.com/",
+        "notes": ""
+      },
+      {
+        "title": "Artsy",
+        "xmlUrl": "http://artsy.github.io/feed",
+        "htmlUrl": "http://artsy.github.io/",
+        "notes": ""
+      },
+      {
+        "title": "Asana",
+        "xmlUrl": "https://blog.asana.com/feed/",
+        "htmlUrl": "https://blog.asana.com/category/eng/",
+        "notes": ""
+      },
+      {
+        "title": "Atlassian",
+        "xmlUrl": "https://www.atlassian.com/blog/feed",
+        "htmlUrl": "https://developer.atlassian.com/blog/",
+        "notes": ""
+      },
+      {
+        "title": "Atomic Object",
+        "xmlUrl": "https://spin.atomicobject.com/feed/",
+        "htmlUrl": "https://spin.atomicobject.com/",
+        "notes": ""
+      },
+      {
+        "title": "Auth0",
+        "xmlUrl": "https://auth0.com/blog/rss.xml",
+        "htmlUrl": "https://auth0.com/blog/",
+        "notes": ""
+      },
+      {
+        "title": "Avenue Code",
+        "xmlUrl": "https://blog.avenuecode.com/rss.xml",
+        "htmlUrl": "http://blog.avenuecode.com/",
+        "notes": ""
+      }
+    ]
+  }
+]
