@@ -261,7 +261,7 @@ export default function App() {
       </main>
       
       <Footer 
-        githubUrl="https://github.com/CodeCompasss/rss-cse-setup"
+        githubUrl="https://github.com/CodeCompasss/rss_cse_setup"
         linkedinUrl="https://www.linkedin.com/company/codecompasss"
         codeCompassUrl="https://code-compass-website.vercel.app"
       />
