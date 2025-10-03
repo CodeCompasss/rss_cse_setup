@@ -38,11 +38,7 @@ Before adding feeds to the Excel file, gather the following information:
 **Required Information:**
 - **RSS/Atom Feed URL**: The direct link to the XML feed (usually ends in `.xml`, `.rss`, or `/feed`)
 - **Blog/Site Title**: The official name of the blog or publication
-- **Category**: Which category best fits this feed (see [Category Guidelines](#category-guidelines))
-
-**Optional Information:**
-- **Website URL**: The main homepage of the blog
-- **Description**: Brief note about the content focus
+- **Category**: Which category best fits this feed
 
 **How to Find RSS Feeds:**
 - Look for RSS icons (📡) on websites

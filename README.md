@@ -139,30 +139,6 @@ rss_cse_setup/
 - **Data Processing**: Node.js, xlsx library
 - **Icons**: React Icons
 
-## FAQ & Troubleshooting
-
-### Common Issues
-
-**Q: The OPML file won't import into my RSS reader**
-- Ensure you're using the "Import OPML" feature, not "Add feed"
-- Try downloading the file again if it appears corrupted
-- Some readers require the file extension to be `.opml`
-
-**Q: I don't see new feeds after adding them**
-- Make sure you ran `node convertExcelToJson.js` after editing the Excel file
-- Check that the Excel file follows the required column format
-- Refresh the web page to see updated feeds
-
-**Q: A feed isn't working**
-- Verify the RSS/Atom URL is correct and accessible
-- Some feeds may be temporarily down
-- Check if the feed requires authentication or has changed URLs
-
-**Q: How do I suggest a new category?**
-- Open an issue on GitHub with your category suggestion
-- Include at least 5-10 quality feeds for the new category
-- Explain why this category would benefit the community
-
 ### Getting Help
 
 - 📝 [Open an issue](../../issues) for bugs or feature requests
