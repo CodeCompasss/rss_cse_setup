@@ -1,5 +1,7 @@
 'use client';
 import React, { useEffect, useState } from 'react';
+import Navbar from '../components/Navbar';
+import Footer from '../components/Footer';
 
 type Feed = {
   title: string;
@@ -15,9 +17,11 @@ type Category = {
 
 export default function App() {
   const [data, setData] = useState<Category[]>([]);
+  const [filteredData, setFilteredData] = useState<Category[]>([]);
   const [selected, setSelected] = useState<Record<string, boolean>>({});
   const [loading, setLoading] = useState(true);
   const [opml, setOpml] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     fetch('/feeds.json')
@@ -25,13 +29,34 @@ export default function App() {
         if (!res.ok) throw new Error('feeds.json not found');
         return res.json();
       })
-      .then((json: Category[]) => setData(json))
+      .then((json: Category[]) => {
+        setData(json);
+        setFilteredData(json);
+      })
       .catch(err => {
         console.error(err);
         setData([]);
+        setFilteredData([]);
       })
       .finally(() => setLoading(false));
   }, []);
+
+  // Filter data based on search query
+  useEffect(() => {
+    if (!searchQuery.trim()) {
+      setFilteredData(data);
+    } else {
+      const filtered = data.map(category => ({
+        ...category,
+        feeds: category.feeds.filter(feed =>
+          feed.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          feed.xmlUrl.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          (feed.htmlUrl && feed.htmlUrl.toLowerCase().includes(searchQuery.toLowerCase()))
+        )
+      })).filter(category => category.feeds.length > 0);
+      setFilteredData(filtered);
+    }
+  }, [data, searchQuery]);
 
   const feedKey = (c: string, f: Feed) => `${c}||${f.xmlUrl}`;
 
@@ -106,55 +131,140 @@ export default function App() {
     URL.revokeObjectURL(url);
   };
 
-  if (loading) return <div className="p-6">Loading feeds...</div>;
+  const handleAddNew = () => {
+    // Placeholder for Google Form integration
+    window.open('https://forms.google.com', '_blank');
+  };
+
+  const handleSearch = (query: string) => {
+    setSearchQuery(query);
+  };
+
+  if (loading) return (
+    <div className="min-h-screen bg-[var(--background)] text-[var(--foreground)] flex flex-col">
+      <Navbar title="RSS CSE Setup" onAddNew={handleAddNew} onSearch={handleSearch} />
+      <div className="flex-1 flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-lg mb-2">Loading feeds...</div>
+          <div className="animate-spin text-2xl">⏳</div>
+        </div>
+      </div>
+      <Footer />
+    </div>
+  );
 
   return (
-    <div className="min-h-screen bg-slate-900 text-slate-100 p-6">
-      <div className="max-w-5xl mx-auto">
-        <header className="flex items-center justify-between mb-6">
-          <h1 className="text-3xl font-bold">rss-cse-picker</h1>
-          <a href="#" className="text-sm underline">Edit feeds.xlsx → convert → commit</a>
-        </header>
+    <div className="min-h-screen bg-[var(--background)] text-[var(--foreground)] flex flex-col transition-colors duration-300">
+      <Navbar title="RSS CSE Setup" onAddNew={handleAddNew} onSearch={handleSearch} />
+      
+      <main className="flex-1 w-full px-4 py-8">
+        <div className="mb-6 text-center">
+          <p className="text-lg text-gray-400 mb-4">
+            Select RSS feeds from various Computer Science and Engineering categories to generate your OPML file.
+          </p>
+          {searchQuery && (
+            <p className="text-sm text-gray-500 mt-2">
+              Showing results for: "{searchQuery}"
+            </p>
+          )}
+        </div>
 
         <section>
-          {data.map((cat) => (
-            <div key={cat.category} className="mb-6 bg-slate-800 p-4 rounded-lg">
+          {filteredData.length === 0 && searchQuery ? (
+            <div className="text-center py-12">
+              <p className="text-gray-400 text-lg">No feeds found matching "{searchQuery}"</p>
+              <p className="text-gray-500 text-sm mt-2">Try adjusting your search terms</p>
+            </div>
+          ) : (
+            filteredData.map((cat) => (
+            <div key={cat.category} className="mb-6 bg-[var(--card-bg)] p-4 rounded-lg shadow-lg border border-gray-700">
               <div className="flex items-center justify-between mb-3">
-                <h2 className="text-xl font-semibold">{cat.category}</h2>
+                <h2 className="text-xl font-semibold text-[var(--foreground)]">{cat.category}</h2>
                 <div className="space-x-2">
-                  <button onClick={() => selectAllCategory(cat.category, true)} className="px-3 py-1 rounded bg-green-600 text-sm">Select all</button>
-                  <button onClick={() => selectAllCategory(cat.category, false)} className="px-3 py-1 rounded bg-red-600 text-sm">Clear</button>
+                  <button 
+                    onClick={() => selectAllCategory(cat.category, true)} 
+                    className="px-3 py-1 rounded bg-green-600 hover:bg-green-700 text-white text-sm font-medium transition-colors"
+                  >
+                    Select all
+                  </button>
+                  <button 
+                    onClick={() => selectAllCategory(cat.category, false)} 
+                    className="px-3 py-1 rounded bg-red-600 hover:bg-red-700 text-white text-sm font-medium transition-colors"
+                  >
+                    Clear
+                  </button>
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-3">
                 {cat.feeds.map(f => {
                   const k = feedKey(cat.category, f);
                   return (
-                    <label key={k} className={`flex items-start gap-3 p-2 rounded ${selected[k] ? 'bg-slate-700' : 'bg-slate-800'}`}>
-                      <input type="checkbox" checked={!!selected[k]} onChange={() => toggleFeed(cat.category, f)} />
-                      <div>
-                        <div className="font-medium">{f.title || f.xmlUrl}</div>
-                        <div className="text-xs text-slate-400">{f.htmlUrl || f.xmlUrl}</div>
+                    <label 
+                      key={k} 
+                      className={`flex items-start gap-3 p-3 rounded-lg cursor-pointer transition-all duration-200 ${
+                        selected[k] 
+                          ? 'bg-indigo-600/20 border border-indigo-500' 
+                          : 'bg-[var(--button-bg)] hover:bg-gray-600 border border-transparent'
+                      }`}
+                    >
+                      <input 
+                        type="checkbox" 
+                        checked={!!selected[k]} 
+                        onChange={() => toggleFeed(cat.category, f)}
+                        className="mt-1 w-4 h-4 accent-indigo-500"
+                      />
+                      <div className="flex-1 min-w-0">
+                        <div className="font-medium text-[var(--foreground)] truncate">{f.title || f.xmlUrl}</div>
+                        <div className="text-xs text-gray-400 truncate">{f.htmlUrl || f.xmlUrl}</div>
                       </div>
                     </label>
                   );
                 })}
               </div>
             </div>
-          ))}
+            ))
+          )}
         </section>
 
-        <div className="mt-6 flex gap-3">
-          <button onClick={generateOpml} className="px-4 py-2 bg-indigo-600 rounded font-semibold">Generate OPML</button>
-          <button onClick={copyToClipboard} className="px-4 py-2 bg-blue-600 rounded">Copy OPML</button>
-          <button onClick={downloadOpml} className="px-4 py-2 bg-emerald-600 rounded">Download OPML</button>
+        <div className="mt-8 flex flex-wrap gap-3">
+          <button 
+            onClick={generateOpml} 
+            className="px-6 py-3 bg-gradient-to-r from-indigo-500 to-indigo-600 hover:from-indigo-600 hover:to-indigo-700 text-white font-semibold rounded-full shadow-lg transition duration-300"
+          >
+            Generate OPML
+          </button>
+          <button 
+            onClick={copyToClipboard} 
+            className="px-6 py-3 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-semibold rounded-full shadow-lg transition duration-300"
+          >
+            Copy OPML
+          </button>
+          <button 
+            onClick={downloadOpml} 
+            className="px-6 py-3 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white font-semibold rounded-full shadow-lg transition duration-300"
+          >
+            Download OPML
+          </button>
         </div>
 
-        <div className="mt-6">
-          <textarea value={opml} readOnly rows={14} className="w-full bg-slate-900 border border-slate-700 p-3 rounded font-mono"></textarea>
+        <div className="mt-8">
+          <h3 className="text-lg font-semibold mb-3 text-[var(--foreground)]">Generated OPML:</h3>
+          <textarea 
+            value={opml} 
+            readOnly 
+            rows={8} 
+            className="w-full bg-[var(--card-bg)] text-[var(--foreground)] border border-gray-600 rounded-lg p-4 font-mono resize-none transition-colors duration-300 focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+            placeholder="Generated OPML will appear here..."
+          />
         </div>
-      </div>
+      </main>
+      
+      <Footer 
+        githubUrl="https://github.com/your-username/rss-cse-setup"
+        linkedinUrl="https://linkedin.com/in/your-profile"
+        codeCompassUrl="https://codecompass.com/your-profile"
+      />
     </div>
   );
 }
